@@ -140,9 +140,42 @@ class UDP:
 # TODO: sinta-se a vontade para adicionar funcoes auxiliares, se desejar.
 
 
-def traceroute(
-    sendsock: util.Socket, recvsock: util.Socket, ip: str
-) -> list[list[str]]:
+def traceroute(sendsock: util.Socket, recvsock: util.Socket, ip: str) -> list[list[str]]:
+    rota = []
+
+    for ttl in range(1, TRACEROUTE_MAX_TTL + 1):
+        roteadores = []
+        sendsock.set_ttl(ttl)
+        encontrou_destino = False
+
+        for tentativa in range(PROBE_ATTEMPT_COUNT):
+            sendsock.sendto(b"", (ip, TRACEROUTE_PORT_NUMBER))
+
+            if not recvsock.recv_select():
+                continue
+
+            packet, addr = recvsock.recvfrom()
+            ip_externo = IPv4(packet)
+
+            inicio_icmp = ip_externo.header_len
+            icmp = ICMP(packet[inicio_icmp:])
+
+            roteador = ip_externo.src
+
+            if roteador not in roteadores:
+                roteadores.append(roteador)
+
+            if icmp.type == 3 and icmp.code == 3:
+                encontrou_destino = True
+                break
+
+        rota.append(roteadores)
+        util.print_result(roteadores, ttl)
+
+        if encontrou_destino:
+            break
+
+    return rota
     """Executa o traceroute e retorna o caminho descoberto.
 
     A funcao deve chamar util.print_result() com o resultado das sondas de cada TTL
@@ -162,9 +195,6 @@ def traceroute(
     """
 
     # TODO: adicione sua implementacao.
-    for ttl in range(1, TRACEROUTE_MAX_TTL + 1):
-        util.print_result([], ttl)
-    return []
 
 
 if __name__ == "__main__":
