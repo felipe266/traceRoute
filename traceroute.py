@@ -142,6 +142,23 @@ class UDP:
 
 def traceroute(sendsock: util.Socket, recvsock: util.Socket, ip: str) -> list[list[str]]:
     rota = []
+        """Executa o traceroute e retorna o caminho descoberto.
+
+    A funcao deve chamar util.print_result() com o resultado das sondas de cada TTL
+    para mostrar o progresso da execucao.
+
+    Argumentos:
+    sendsock -- socket UDP usado para enviar as sondas do traceroute.
+    recvsock -- socket no qual serao recebidas as respostas ICMP.
+    ip -- endereco IP do host de destino.
+
+    Retorno:
+    Uma lista de listas representando os roteadores descobertos para cada TTL sondado.
+    A lista de indice i contem todos os roteadores encontrados com uma sonda de TTL i+1.
+    Os roteadores podem aparecer em qualquer ordem. Se nenhum roteador for encontrado,
+    a lista correspondente pode ficar vazia. Se `ip` for descoberto, ele deve aparecer
+    como o ultimo elemento da lista externa.
+    """
 
     for ttl in range(1, TRACEROUTE_MAX_TTL + 1):
         roteadores = []
@@ -176,23 +193,7 @@ def traceroute(sendsock: util.Socket, recvsock: util.Socket, ip: str) -> list[li
             break
 
     return rota
-    """Executa o traceroute e retorna o caminho descoberto.
 
-    A funcao deve chamar util.print_result() com o resultado das sondas de cada TTL
-    para mostrar o progresso da execucao.
-
-    Argumentos:
-    sendsock -- socket UDP usado para enviar as sondas do traceroute.
-    recvsock -- socket no qual serao recebidas as respostas ICMP.
-    ip -- endereco IP do host de destino.
-
-    Retorno:
-    Uma lista de listas representando os roteadores descobertos para cada TTL sondado.
-    A lista de indice i contem todos os roteadores encontrados com uma sonda de TTL i+1.
-    Os roteadores podem aparecer em qualquer ordem. Se nenhum roteador for encontrado,
-    a lista correspondente pode ficar vazia. Se `ip` for descoberto, ele deve aparecer
-    como o ultimo elemento da lista externa.
-    """
 
     # TODO: adicione sua implementacao.
 
