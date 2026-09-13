@@ -43,7 +43,7 @@ class IPv4:
             "!BBHHHBBH4s4s", buffer[:20]
         )
         self.version = ver_ihl >> 4
-        self.header_len = (ver_ihl & 0x0F) * 4  # (1 << 13)
+        self.header_len = (ver_ihl & 0x0F) * 4  # (1 << 4) * 4
         self.tos = tos
         self.length = tot_len
         self.id = ident
